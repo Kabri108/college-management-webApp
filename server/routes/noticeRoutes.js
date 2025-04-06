@@ -4,7 +4,8 @@ import {
   createNotice,
   getNotices,
 } from "../controllers/noticeController.js";
-import { protect } from "../middleware/auth.js";
+import { protect } from "../middleware/authMiddleware.js";
+
 
 const router = express.Router();
 

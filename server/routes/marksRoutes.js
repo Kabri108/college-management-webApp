@@ -1,11 +1,13 @@
 // routes/marksRoutes.js
 import express from "express";
-import { protect, teacherOnly } from "../middleware/auth.js";
+
 import {
   enterMarks,
   getStudentResults,
   getSubjectResults,
 } from "../controllers/marksController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { teacherOnly } from "../middleware/auth.js";
 
 const router = express.Router();
 

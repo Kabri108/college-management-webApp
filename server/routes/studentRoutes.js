@@ -1,13 +1,7 @@
-// routes/studentRoutes.js
-import express from "express";
-import {
-  getAllStudents,
-  getStudentById,
-  createStudent,
-  updateStudent,
-  deleteStudent,
-} from "../controllers/studentController.js";
-import { protect } from "../middleware/auth.js";
+import express from "express"
+import { createStudent, deleteStudent, getAllStudents, getStudentById, updateStudent } from "../controllers/studentControllers.js";
+import { protect } from "../middleware/authMiddleware.js";
+
 
 const router = express.Router();
 

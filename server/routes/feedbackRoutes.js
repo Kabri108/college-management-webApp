@@ -1,7 +1,8 @@
 // routes/feedbackRoutes.js
 import express from "express";
-import { protect, adminOnly } from "../middleware/auth.js";
 import { submitFeedback, getAllFeedbacks } from "../controllers/feedbackController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { adminOnly } from "../middleware/auth.js";
 
 const router = express.Router();
 

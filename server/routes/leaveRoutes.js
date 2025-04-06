@@ -1,7 +1,9 @@
 // routes/leaveRoutes.js
 import express from "express";
-import { protect, adminOnly } from "../middleware/auth.js";
+
 import { applyLeave, getAllLeaves, updateLeaveStatus } from "../controllers/leaveController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { adminOnly } from "../middleware/auth.js";
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
 // routes/resultRoutes.js
 import express from "express";
-import { protect } from "../middleware/auth.js";
 import { generateResultPDF } from "../controllers/resultController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
