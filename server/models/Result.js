@@ -1,10 +1,33 @@
+// models/Result.js
 import mongoose from "mongoose";
 
-const ResultSchema = new mongoose.Schema({
-  student: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  exam: { type: mongoose.Schema.Types.ObjectId, ref: "Exam", required: true },
-  marksObtained: { type: Number, required: true },
-  grade: { type: String, enum: ["A", "B", "C", "D", "F"], required: true },
-});
+const resultSchema = new mongoose.Schema(
+  {
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    subject: {
+      type: String,
+      required: true,
+    },
+    exam: {
+      type: String,
+      required: true, // e.g., "Mid Term", "Final"
+    },
+    marksObtained: {
+      type: Number,
+      required: true,
+    },
+    totalMarks: {
+      type: Number,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model("Result", ResultSchema);
+resultSchema.index({ student: 1, subject: 1, exam: 1 }, { unique: true });
+
+export default mongoose.model("Result", resultSchema);

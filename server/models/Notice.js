@@ -1,10 +1,32 @@
+// models/Notice.js
 import mongoose from "mongoose";
 
-const NoticeSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Admin or Faculty
-  postedAt: { type: Date, default: Date.now },
-});
+const noticeSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // Admin or Teacher
+      required: true,
+    },
+    forRole: {
+      type: String,
+      enum: ["student", "teacher", "all"],
+      default: "all",
+    },
+    date: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model("Notice", NoticeSchema);
+export default mongoose.model("Notice", noticeSchema);

@@ -1,18 +1,10 @@
+// routes/resultRoutes.js
 import express from "express";
-import {
-  createResult,
-  getResults,
-  getResultById,
-  updateResult,
-  deleteResult,
-} from "../controllers/resultController.js";
+import { protect } from "../middleware/auth.js";
+import { generateResultPDF } from "../controllers/resultController.js";
 
 const router = express.Router();
 
-router.post("/", createResult); // Create a Result
-router.get("/", getResults); // Get all Results
-router.get("/:id", getResultById); // Get Result by ID
-router.put("/:id", updateResult); // Update Result
-router.delete("/:id", deleteResult); // Delete Result
+router.get("/generate/:studentId", protect, generateResultPDF);
 
 export default router;

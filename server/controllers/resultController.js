@@ -1,60 +1,42 @@
-import Result from "../models/Result.js";
+// controllers/resultController.js
+import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
+import pdfkit from "pdfkit";
+import fs from "fs";
+import Marks from "../models/Marks.js";
 
-// ✅ Create Result
-export const createResult = async (req, res) => {
-  try {
-    const { student, exam, marksObtained, grade } = req.body;
-    const result = await Result.create({ student, exam, marksObtained, grade });
-    res.status(201).json(result);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+export const generateResultPDF = async (req, res) => {
+  const { studentId } = req.params;
 
-// ✅ Get all Results
-export const getResults = async (req, res) => {
   try {
-    const results = await Result.find().populate("student exam");
-    res.status(200).json(results);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    // Fetch marks and student data
+    const results = await Marks.find({ student: studentId }).populate("subject");
+    
+    // Create a PDF document
+    const doc = new pdfkit();
+    const fileName = `result-${studentId}.pdf`;
+    const filePath = `./public/results/${fileName}`;
 
-// ✅ Get Result by ID
-export const getResultById = async (req, res) => {
-  try {
-    const result = await Result.findById(req.params.id).populate("student exam");
-    if (!result) return res.status(404).json({ message: "Result not found" });
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    // Pipe the PDF output to a file
+    doc.pipe(fs.createWriteStream(filePath));
 
-// ✅ Update Result
-export const updateResult = async (req, res) => {
-  try {
-    const { marksObtained, grade } = req.body;
-    const result = await Result.findByIdAndUpdate(
-      req.params.id,
-      { marksObtained, grade },
-      { new: true }
-    );
-    if (!result) return res.status(404).json({ message: "Result not found" });
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    doc.fontSize(16).text("Student Result Sheet", { align: "center" });
+    doc.text("\n");
 
-// ✅ Delete Result
-export const deleteResult = async (req, res) => {
-  try {
-    const result = await Result.findByIdAndDelete(req.params.id);
-    if (!result) return res.status(404).json({ message: "Result not found" });
-    res.status(200).json({ message: "Result deleted successfully" });
+    results.forEach((result) => {
+      doc.text(`Subject: ${result.subject.name}`);
+      doc.text(`Marks Obtained: ${result.marks}/${result.maxMarks}`);
+      const percentage = ((result.marks / result.maxMarks) * 100).toFixed(2);
+      doc.text(`Percentage: ${percentage}%`);
+      doc.text("\n");
+    });
+
+    // Finalize PDF file
+    doc.end();
+
+    // Send file path to frontend to download
+    res.status(200).json({ message: "PDF Generated", filePath: `/results/${fileName}` });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error generating result PDF", error: error.message });
   }
 };
