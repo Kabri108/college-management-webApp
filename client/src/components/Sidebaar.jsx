@@ -1,13 +1,13 @@
+// src/components/Sidebar.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
-    <div className="w-64 bg-gray-800 text-white min-h-screen p-4">
-      <div className="space-y-4">
-        <Link to="/student/dashboard" className="block py-2 px-4 hover:bg-blue-600 rounded">Student Dashboard</Link>
-        <Link to="/admin/dashboard" className="block py-2 px-4 hover:bg-blue-600 rounded">Admin Dashboard</Link>
-      </div>
+    <div className="space-y-6 h-screen">
+      <Link to="/student/dashboard" className="block text-lg text-white hover:bg-gray-700 p-2 rounded-md">Student Dashboard</Link>
+      <Link to="/admin/dashboard" className="block text-lg text-white hover:bg-gray-700 p-2 rounded-md">Admin Dashboard</Link>
+      <Link to="/" className="block text-lg text-white hover:bg-gray-700 p-2 rounded-md">Home</Link>
     </div>
   );
 };

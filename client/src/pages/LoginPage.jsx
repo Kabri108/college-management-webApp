@@ -1,56 +1,63 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate instead of useHistory
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const navigate = useNavigate(); // useNavigate hook
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
     try {
-      const res = await axios.post('/api/auth/login', { email, password });
-      if (res.data.token) {
-        localStorage.setItem('token', res.data.token);
-        window.location.href = '/student/dashboard'; // or '/admin/dashboard'
-      }
-    } catch (err) {
-      console.error('Login failed', err);
+      // Make the login request
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
+        email,
+        password,
+      });
+  
+      // Assuming the backend sends back the _id and token
+      const { _id, token } = response.data;  // Get _id instead of userId
+  
+      // Store the _id and token in localStorage
+      localStorage.setItem('userId', _id);  // Save _id as userId
+      localStorage.setItem('token', token); // Save token
+      console.log(_id);  // Log the userId (now _id) to the console
+  
+      // Optionally, log the response data for debugging
+      console.log('Login successful:', response.data);
+  
+      // Redirect to the dashboard after successful login
+      navigate('/student/dashboard');  // Use navigate instead of history.push
+    } catch (error) {
+      setError('Login failed. Please check your credentials.');
+      console.error('Login error:', error);
     }
   };
+  
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-semibold mb-4">Login</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              placeholder="Email"
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required 
-            />
-          </div>
-          <div className="mb-4">
-            <input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              placeholder="Password"
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required 
-            />
-          </div>
-          <button 
-            type="submit" 
-            className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700"
-          >
-            Login
-          </button>
-        </form>
-      </div>
+    <div className="login-container">
+      <h2>Login</h2>
+      {error && <div className="error">{error}</div>}
+      <form onSubmit={handleLogin}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
 };
